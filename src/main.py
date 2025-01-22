@@ -40,8 +40,8 @@ def main():
     sysin.Input_Sysin(sysin_file)
     #制御データ入力値チェック
     if False == sysin.Check_sysin() :
-        logger.error('制御データREAD　ERROR')
-        print('[main] 制御データREAD　ERROR')
+        logger.error('制御データREAD ERROR')
+        print('[main] 制御データREAD ERROR')
         sys.exit(1)
         
     #=========================

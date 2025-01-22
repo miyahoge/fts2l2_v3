@@ -14,6 +14,8 @@ logger = getLogger("Log").getChild("sub")
 import os
 import sys
 import configparser
+import numpy as np
+import re
 ##@brief 制御データファイル入力クラス
 class configInit:
 
@@ -23,6 +25,7 @@ class configInit:
             logger.error('制御データファイルが存在しません')
             print('制御データファイルが存在しません')
             sys.exit(1)
+            
         #初期値設定
         ##SWFPプロダクトXCO2の出力有無フラグ
         self.SWFP_CO2             = 0
@@ -148,6 +151,26 @@ class configInit:
         self.XLABEL               = ''
         ##Y軸（緯度）のラベル名
         self.YLABEL               = ''
+
+        ##バイアス計算用
+        # 係数の数
+        self.BIAS_COEF_NUM        = 30
+        self.BIAS_FLAG = 0
+        self.CO2_VER = ''
+        self.CH4_VER = ''
+        self.CO_VER  = ''
+        self.CO2_A = []
+        self.CH4_A = []
+        self.CO_A  = []
+        self.CO2_X_NUM = 3
+        self.CH4_X_NUM = 3
+        self.CO_X_NUM  = 3
+        self.CO2_X = []
+        self.CH4_X = []
+        self.CO_X  = []
+        self.CO2_X_CAL = []
+        self.CH4_X_CAL = []
+        self.CO_X_CAL  = []
     
     ##@brief 制御データ入力
     ##@param [in] sysin_path 制御データファイルパス
@@ -210,8 +233,6 @@ class configInit:
             logger.info('COLORSCALEMAX_FPCO   = {0}'.format(self.COLORSCALEMAX_FPCO))
             self.COLORSCALEMIN_FPCO   = float(config_ini['SWFP']['COLORSCALEMIN_FPCO'])
             logger.info('COLORSCALEMIN_FPCO   = {0}'.format(self.COLORSCALEMIN_FPCO))
-            self.SCALESTEP_FPCO       = float(config_ini['SWFP']['SCALESTEP_FPCO'])
-            logger.info('SCALESTEP_FPCO       = {0}'.format(self.SCALESTEP_FPCO))
             
             logger.info('**SWPR用データを読み込み**')
             self.SWPR_CH4             = int(config_ini['SWPR']['SWPR_CH4'])
@@ -287,6 +308,63 @@ class configInit:
             logger.info('XLABEL               = {0}'.format(self.XLABEL))
             self.YLABEL    = config_ini['MAP']['YLABEL']
             logger.info('YLABEL               = {0}'.format(self.YLABEL))
+
+            # 以下から2024年度改修（バイアス計算機能追加）で追加
+            logger.info('**BIAS用データを読み込み**')
+            self.BIAS_FLAG = int(config_ini['BIAS']['BIAS_FLAG'])
+            logger.info('BIAS_FLAG = {0}'.format(self.BIAS_FLAG))
+            if(self.BIAS_FLAG):
+                logger.info('**BIAS補正あり**')
+                # 補正係数
+                CO2_A_str = config_ini['BIAS']['CO2_A']
+                self.CO2_A = [float(num) for num in CO2_A_str.split(",")]
+                logger.info('CO2_A  = {0}'.format(self.CO2_A))
+                CH4_A_str = config_ini['BIAS']['CH4_A']
+                self.CH4_A = [float(num) for num in CH4_A_str.split(",")]
+                logger.info('CH4_A  = {0}'.format(self.CH4_A))
+                CO_A_str  = config_ini['BIAS']['CO_A']
+                self.CO_A  = [float(num) for num in CO_A_str.split(",")]
+                logger.info('CO_A  = {0}'.format(self.CO_A))
+                # バイアス補正のバージョン
+                self.CO2_VER = config_ini['BIAS']['CO2_VER']
+                logger.info('CO2_VER              = {0}'.format(self.CO2_VER))
+                self.CH4_VER = config_ini['BIAS']['CH4_VER']
+                logger.info('CH4_VER              = {0}'.format(self.CH4_VER))
+                self.CO_VER = config_ini['BIAS']['CO_VER']
+                logger.info('CO_VER               = {0}'.format(self.CO_VER))
+                # バイアス補正パラメータ個数
+                self.CO2_X_NUM   = int(config_ini['BIAS']['CO2_X_NUM'])
+                logger.info('CO2_X_NUM            = {0}'.format(self.CO2_X_NUM))
+                self.CH4_X_NUM   = int(config_ini['BIAS']['CH4_X_NUM'])
+                logger.info('CH4_X_NUM            = {0}'.format(self.CH4_X_NUM))
+                self.CO_X_NUM   = int(config_ini['BIAS']['CO_X_NUM'])
+                logger.info('CO_X_NUM             = {0}'.format(self.CO_X_NUM))
+                # バイアス補正パラメータのデータセットパス
+                CO2_X_str = config_ini['BIAS']['CO2_X']
+                # 正規表現でダブルクォーテーションで囲まれた部分を抽出
+                self.CO2_X = re.findall(r'"([^"]*)"', CO2_X_str)
+                logger.info('CO2_X                = {0}'.format(self.CO2_X))
+                CH4_X_str = config_ini['BIAS']['CH4_X']
+                self.CH4_X = re.findall(r'"([^"]*)"', CH4_X_str)
+                logger.info('CH4_X                = {0}'.format(self.CH4_X))
+                CO_X_str  = config_ini['BIAS']['CO_X']
+                self.CO_X  = re.findall(r'"([^"]*)"', CO_X_str)
+                logger.info('CO_X                 = {0}'.format(self.CO_X))
+                # バイアス補正パラメータ算出式
+                CO2_X_CAL_str = config_ini['BIAS']['CO2_X_CAL']
+                self.CO2_X_CAL = [xcal for xcal in CO2_X_CAL_str.split(",")]
+                logger.info('CO2_X_CAL  = {0}'.format(CO2_X_CAL_str))
+                CH4_X_CAL_str = config_ini['BIAS']['CH4_X_CAL']
+                self.CH4_X_CAL = [xcal for xcal in CH4_X_CAL_str.split(",")]
+                logger.info('CH4_X_CAL  = {0}'.format(CH4_X_CAL_str))
+                CO_X_CAL_str  = config_ini['BIAS']['CO_X_CAL']
+                self.CO_X_CAL  = [xcal for xcal in CO_X_CAL_str.split(",")]
+                logger.info('CO_X_CAL  = {0}'.format(CO_X_CAL_str))
+
+
+            else:
+                logger.info('**BIAS補正なし**')
+
             logger.info('----[全制御データ読み込み完了]----')
             
             logger.info('==========================================================')
@@ -367,7 +445,7 @@ class configInit:
         if self.TIMEAVEID < 1 or self.TIMEAVEID > 3:
             logger.error('**制御データ範囲エラー** [TIMEAVEID:{}]'.format(self.TIMEAVEID))
             ret = False
-        
+
         if 360.0 % self.SPACIALSTEP != 0.0:
             logger.error('**空間平均ステップ値エラー** [SPACIALSTEP:{}] 180.0を割り切れる値を設定し直してください。'.format(self.SPACIALSTEP))
             ret = False
@@ -430,6 +508,46 @@ class configInit:
         if self.MAPRNG_PRSIF < 1 or self.MAPRNG_PRSIF > 3:
             logger.error('**制御データ範囲エラー** [MAPRNG_PRSIF:{}]'.format(self.MAPRNG_PRSIF))
             ret = False
+
+        #バイアス用データ設定チェック
+        #それぞれのバイアス補正パラメータ設定数と、計算式の個数が整合しているかなどを確認すること
+        if self.CO2_X_NUM < 1 or self.CO2_X_NUM > 29:
+            logger.error('**制御データ範囲エラー** [CO2_X_NUM:{}]'.format(self.CO2_X_NUM))
+            ret = False
+        
+        if self.CH4_X_NUM < 1 or self.CH4_X_NUM > 29:
+            logger.error('**制御データ範囲エラー** [CH4_X_NUM:{}]'.format(self.CH4_X_NUM))
+            ret = False
+
+        if self.CO_X_NUM < 1 or self.CO_X_NUM > 29:
+            logger.error('**制御データ範囲エラー** [CO_X_NUM:{}]'.format(self.CO_X_NUM))
+            ret = False
+        
+        if len(self.CO2_X) != self.CO2_X_NUM:
+            logger.error('**制御データ範囲エラー** [CO2_X設定数:{}]'.format(len(self.CO2_X)))
+            ret = False
+        
+        if len(self.CH4_X) != self.CH4_X_NUM:
+            logger.error('**制御データ範囲エラー** [CH4_X設定数:{}]'.format(len(self.CH4_X)))
+            ret = False
+    
+        if len(self.CO_X) != self.CO_X_NUM:
+            logger.error('**制御データ範囲エラー** [CO_X設定数:{}]'.format(len(self.CO_X)))
+            ret = False
+
+        if len(self.CO2_X_CAL) != self.CO2_X_NUM:
+            logger.error('**制御データ範囲エラー** [CO2_X_CAL設定数:{}]'.format(len(self.CO2_X_CAL)))
+            ret = False
+        
+        if len(self.CH4_X_CAL) != self.CH4_X_NUM:
+            logger.error('**制御データ範囲エラー** [CH4_X_CAL設定数:{}]'.format(len(self.CH4_X_CAL)))
+            ret = False
+    
+        if len(self.CO_X_CAL) != self.CO_X_NUM:
+            logger.error('**制御データ範囲エラー** [CO_X_CAL設定数:{}]'.format(len(self.CO_X_CAL)))
+            ret = False
+
+        
 
             
         if ret != True:
