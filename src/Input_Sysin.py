@@ -171,6 +171,10 @@ class configInit:
         self.CO2_X_CAL = []
         self.CH4_X_CAL = []
         self.CO_X_CAL  = []
+        self.CHANGE_COEF_DATE = ''
+        self.CO2_A2 = []
+        self.CH4_A2 = []
+        self.CO_A2  = []
     
     ##@brief 制御データ入力
     ##@param [in] sysin_path 制御データファイルパス
@@ -360,6 +364,20 @@ class configInit:
                 CO_X_CAL_str  = config_ini['BIAS']['CO_X_CAL']
                 self.CO_X_CAL  = [xcal for xcal in CO_X_CAL_str.split(",")]
                 logger.info('CO_X_CAL  = {0}'.format(CO_X_CAL_str))
+
+                # 補正係数の変更日付
+                self.CHANGE_COEF_DATE = config_ini['BIAS']['CHANGE_COEF_DATE']
+                logger.info('CHANGE_COEF_DATE = {0}'.format(self.CHANGE_COEF_DATE))
+                # 変更後補正係数
+                CO2_A2_str = config_ini['BIAS']['CO2_A2']
+                self.CO2_A2 = [float(num) for num in CO2_A2_str.split(",")]
+                logger.info('CO2_A2  = {0}'.format(self.CO2_A2))
+                CH4_A2_str = config_ini['BIAS']['CH4_A2']
+                self.CH4_A2 = [float(num) for num in CH4_A2_str.split(",")]
+                logger.info('CH4_A2  = {0}'.format(self.CH4_A2))
+                CO_A2_str  = config_ini['BIAS']['CO_A2']
+                self.CO_A2  = [float(num) for num in CO_A2_str.split(",")]
+                logger.info('CO_A2  = {0}'.format(self.CO_A2))
 
 
             else:
