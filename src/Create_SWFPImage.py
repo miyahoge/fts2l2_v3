@@ -29,6 +29,9 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
     import XYZQ_c
     import Draw_Map as DM
     import Get_Reexe_Num as Re_Num
+    import Read_h5_Bias as rh5bias
+    import Calc_Correct_Param as calcorparm
+    import Bias_Correct as bias
 
     #各気体データ取得クラスコンストラクタ
     FP_CO2 = XYZQ_c.XYZQ()
@@ -68,6 +71,15 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
         if FP_CO2.IsGetInfo():   #取得対象か？
             #観測点と観測データ設定
             X_CO2, Y_CO2, Z_CO2, Q_CO2, LF_CO2, myid = FP_CO2.GetData()
+            # バイアス補正ありの場合
+            if sysin.BIAS_FLAG == 1:
+                # バイアス補正パラメータ計算元データセット取得
+                BiasParam_DatSet = rh5bias.Read_Bias_Param(myid, sysin)
+                # バイアス補正パラメータ計算
+                BiasParam = calcorparm.Calc_Correct_Pram(myid, sysin, BiasParam_DatSet)
+                # バイアス補正実施
+                bias.Bias_Correct(BiasParam, Z_CO2)
+
             #格子データ作成
             grid_CO2 = Create_GridData.griddata(X_CO2, Y_CO2, Z_CO2, step = sysin.SPACIALSTEP)
         
@@ -81,6 +93,15 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
         if FP_CH4.IsGetInfo():   #取得対象か？
             #観測点と観測データ設定
             X_CH4, Y_CH4, Z_CH4, Q_CH4, LF_CH4 , myid= FP_CH4.GetData()
+            # バイアス補正ありの場合
+            if sysin.BIAS_FLAG == 1:
+                # バイアス補正パラメータ計算元データセット取得
+                BiasParam_DatSet = rh5bias.Read_Bias_Param(myid, sysin)
+                # バイアス補正パラメータ計算
+                BiasParam = calcorparm.Calc_Correct_Pram(myid, sysin, BiasParam_DatSet)
+                # バイアス補正実施
+                bias.Bias_Correct(BiasParam, Z_CH4)
+
             #格子データ作成
             grid_CH4 = Create_GridData.griddata(X_CH4, Y_CH4, Z_CH4, step = sysin.SPACIALSTEP)
         
@@ -94,6 +115,15 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
         if FP_CO.IsGetInfo():   #取得対象か？
             #観測点と観測データ設定
             X_CO, Y_CO, Z_CO, Q_CO, LF_CO , myid= FP_CO.GetData()
+            # バイアス補正ありの場合
+            if sysin.BIAS_FLAG == 1:
+                # バイアス補正パラメータ計算元データセット取得
+                BiasParam_DatSet = rh5bias.Read_Bias_Param(myid, sysin)
+                # バイアス補正パラメータ計算
+                BiasParam = calcorparm.Calc_Correct_Pram(myid, sysin, BiasParam_DatSet)
+                # バイアス補正実施
+                bias.Bias_Correct(BiasParam, Z_CO)
+
             #格子データ作成
             grid_CO = Create_GridData.griddata(X_CO, Y_CO, Z_CO, step = sysin.SPACIALSTEP)
         
