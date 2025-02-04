@@ -3,7 +3,7 @@
 @brief HDF5形式のプロダクトデータファイルから、バイアス補正パラメータを読み込むモジュール
 """
 import h5py
-import numpy as np
+import sys
 
 # ログのライブラリ
 from logging import getLogger
@@ -32,6 +32,6 @@ def Read_Bias_Param(X, Num, h5path):
                         Bias_Param_Dataset.append(f[data_path][()])
                     except KeyError:
                         logger.error('バイアス補正パラメータのデータセットパスに誤りがあります。{}'.format(data_path))
-                        return id
+                        sys.exit(1)
         return Bias_Param_Dataset
 
