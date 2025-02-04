@@ -6,6 +6,11 @@
 
 import math
 import re
+import sys
+# ログのライブラリ
+from logging import getLogger
+## main.pyで宣言したloggerの子loggerオブジェクトの宣言
+logger = getLogger("Log").getChild("sub")
 
 ##@brief 長さ2以上リストならリストを、長さ1なら数値に変換
 ##@param [in] value 確認対象リスト
@@ -22,10 +27,15 @@ def assign_value(value):
    
 ##@brief degreeからradianに変換
 ##@param [in] value 変換対象数値[deg]
+##@attention valueには必ず1個の実数値を設定すること
 ##@return var 変換後数値 [rad]
 def deg2rad(value):
     pi = 4.*math.atan(1.)
     dtr = pi / 180.
+    if isinstance(value, list):
+        logger.error('バイアス補正パラメータの計算で予期せぬエラー: {}'.format("must be real number, not list"))
+        sys.exit(1)
+    
     return value*dtr
    
 ##@brief バイアス補正パラメータ計算
@@ -60,6 +70,7 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
     for i in range(X_NUM):
         # 一時変数をここで毎回初期化
         x_tmp =[]
+        fst_flg = [1,1,1,1,1]
         # データセットの内容を配列か数値かを確認してデータ設定する
         for j in range(set_limit):
             x_tmp.append(assign_value(dat_set[j+5*i]))
@@ -74,21 +85,27 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
         if matches_cos:
             for c in matches_cos:
                 idx = int(c[1])
-                x_tmp[idx-1] = deg2rad(x_tmp[idx-1])
+                if fst_flg[idx-1]==1:  # 初回判定　初回だけラジアン変換
+                    x_tmp[idx-1] = deg2rad(x_tmp[idx-1])
+                    fst_flg[idx-1]=0
    
         # sin 使用 x をすべて抽出
         matches_sin = re.findall(r"sin\((.*?)\)", expression)
         if matches_sin:
             for s in matches_sin:
                 idx = int(s[1])
-                x_tmp[idx-1] = deg2rad(x_tmp[idx-1])
+                if fst_flg[idx-1]==1:  # 初回判定　初回だけラジアン変換
+                    x_tmp[idx-1] = deg2rad(x_tmp[idx-1])
+                    fst_flg[idx-1]=0
    
         # tan 使用 x をすべて抽出
         matches_tan = re.findall(r"tan\((.*?)\)", expression)
         if matches_tan:
             for t in matches_tan:
                 idx = int(t[1])
-                x_tmp[idx-1] = deg2rad(x_tmp[idx-1])
+                if fst_flg[idx-1]==1:  # 初回判定　初回だけラジアン変換
+                    x_tmp[idx-1] = deg2rad(x_tmp[idx-1])
+                    fst_flg[idx-1]=0
         
         # eval関数で使用する変数名x1~x5にtemp変数を代入する。
         x1 = x_tmp[0]
@@ -96,7 +113,19 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
         x3 = x_tmp[2]
         x4 = x_tmp[3]
         x5 = x_tmp[4]
-        Bias_Param.append(eval(expression))
+        try:
+            Bias_Param.append(eval(expression))
+        except SyntaxError:
+            logger.error('バイアス補正パラメータの計算式構文エラー: {}'.format(expression))
+            sys.exit(1)
+        except NameError:
+            logger.error('バイアス補正パラメータの計算式変数エラー: {}'.format(expression))
+            sys.exit(1)
+        except Exception as e:
+            logger.error('バイアス補正パラメータの計算で予期せぬエラー: {}'.format(e))
+            sys.exit(1)
+
+            
     
     return Bias_Param
 
