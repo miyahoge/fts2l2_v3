@@ -36,8 +36,8 @@ def deg2rad(value):
 def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
     def ln(x):
         return math.log(x)
-    def log10(value):
-        return math.log10(value)
+    def log10(x):
+        return math.log10(x)
     def sin(x):
         return math.sin(x)
     def cos(x):
@@ -71,7 +71,6 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
         # 三角関数の場合はデータセットの内容をラジアン変換
         # cos 使用 x をすべて抽出
         matches_cos = re.findall(r"cos\((.*?)\)", expression)
-        variables = {}
         if matches_cos:
             for c in matches_cos:
                 idx = int(c[1])
@@ -79,7 +78,6 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
    
         # sin 使用 x をすべて抽出
         matches_sin = re.findall(r"sin\((.*?)\)", expression)
-        variables = {}
         if matches_sin:
             for s in matches_sin:
                 idx = int(s[1])
@@ -87,7 +85,6 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
    
         # tan 使用 x をすべて抽出
         matches_tan = re.findall(r"tan\((.*?)\)", expression)
-        variables = {}
         if matches_tan:
             for t in matches_tan:
                 idx = int(t[1])
