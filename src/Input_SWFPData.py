@@ -49,7 +49,12 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
             logger.info('SWFP_CO2取得完了')
         
             # 品質、濃度からデータを設定
-            FP_CO2.Set_ProdData(fpfile_id, file_co2idx, 0)
+            # バイアス補正フラグONの場合
+            if sysin.BIAS_FLG:
+                FP_CO2.SetBiasSysin(sysin.CO2_X, sysin.CO2_X_NUM, sysin.CO2_X_CAL, sysin.CO2_A)
+                FP_CO2.Set_ProdData_Bias(fpfile_id, file_co2idx, 0)
+            else: # バイアス補正フラグOFFの場合
+                FP_CO2.Set_ProdData(fpfile_id, file_co2idx, 0)
             #陸域のみ指定の場合は海域分のデータを削除
             if sysin.MAPRNG_FPCO2 == 2:
                 FP_CO2.Set_byLandFraction_Land(threshold)

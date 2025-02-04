@@ -11,6 +11,9 @@ from logging import getLogger
 logger = getLogger("Log").getChild("sub")
 
 import Read_h5 as rh5
+import Read_h5_Bias as rh5bias
+import Calc_Correct_Param as biasprm
+import Bias_Correct as bias
 
 #@class XYZQ
 ##@brief プロダクトデータ設定クラス
@@ -42,6 +45,12 @@ class XYZQ:
         self.whoami = ''
         ##ファイルがない月数保存用
         self.month_noexist = 0
+        ##
+        self.X_PATH = []
+        ##
+        self.X_NUM = 0
+        ##
+        self.X_CAL = []
 
     ##@brief フォルダ内の全ファイル名を取得
     ##@param [in] fileID プロダクト識別 SWFP or SWPR
@@ -90,7 +99,6 @@ class XYZQ:
     ##@return calcend_t 計算終了日付
     def Input_common(self, sysin, fileID, file_folder, begin_t, end_t):
 
-        import datetime
         from datetime import date
         from datetime import datetime as dtm
         from Get_Reexe_Num import monthdelta
@@ -195,6 +203,7 @@ class XYZQ:
         for file in self.file_name[self.start:end]:   #計算対象全ファイル分のデータを1次元配列として入手
             ppm  = []  #毎回初期化
             qflg = []
+
             if prod == 'SWPR':
                 self.whoami = rh5.read_h5_air_pr(file, id, ppm, qflg)
             elif prod == 'SWFP':
@@ -210,6 +219,35 @@ class XYZQ:
         self.Y = np.delete(self.Y, np.where(self.Q != 0)[0])
         self.LandFrac = np.delete(self.LandFrac, np.where(self.Q != 0)[0])
 
+    ##@brief 全域分のデータ設定(バイアス補正あり)
+    ##@param [in] prod プロダクト識別 SWFP or SWPR
+    ##@param [in] file_idx ファイル番号
+    ##@param [in] id 気体識別ID
+    def Set_ProdData_Bias(self, file_idx, id):
+        end = file_idx
+        for file in self.file_name[self.start:end]:   #計算対象全ファイル分のデータを1次元配列として入手
+            ppm  = []  #毎回初期化
+            qflg = []
+            coef_arr_lst = []
+            #SWFPのみ
+            self.whoami = rh5.read_h5_air_fp(file, id, ppm, qflg)
+            self.Q = np.append(self.Q, np.array(qflg))
+            self.Z = np.append(self.Z, np.array(ppm))
+            # バイアス補正パラメータ計算元データセット取得
+            BiasParam_DatSet = rh5bias.Read_Bias_Param(self.X_PATH, self.X_NUM, file)
+            # バイアス補正パラメータ計算
+            BiasParam = biasprm.Calc_Correct_Pram(self.X_NUM, self.X_CAL, BiasParam_DatSet)
+            # バイアス補正実施
+            bias.Bias_Correct(self.A, BiasParam, self.Z)
+
+        self.start = end    #最後のインデックスを指定
+        #品質フラグが0以外は不使用
+        self.Z = np.delete(self.Z, np.where(self.Q != 0)[0])
+        self.X = np.delete(self.X, np.where(self.Q != 0)[0])
+        self.Y = np.delete(self.Y, np.where(self.Q != 0)[0])
+        self.LandFrac = np.delete(self.LandFrac, np.where(self.Q != 0)[0])
+                
+    
     ##@brief 陸域のみの描画時の設定
     ##@param [in] threshold しきい値　10.0%
     ##@return しきい値未満の個数
@@ -259,3 +297,9 @@ class XYZQ:
             return -1
         else:
             return 0
+        
+    def SetBiasSysin(self, x_path, x_num, x_cal, A):
+        self.X_PATH = x_path
+        self.X_NUM = x_num
+        self.X_CAL = x_cal
+        self.A = A
