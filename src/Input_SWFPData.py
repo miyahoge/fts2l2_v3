@@ -73,7 +73,12 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
             logger.info('SWFP_CH4取得完了')
         
             # 品質、濃度からデータを設定
-            FP_CH4.Set_ProdData(fpfile_id, file_ch4idx, 1)
+            # バイアス補正フラグONの場合
+            if sysin.BIAS_FLG:
+                FP_CH4.SetBiasSysin(sysin.CH4_X, sysin.CH4_X_NUM, sysin.CH4_X_CAL, sysin.CH4_A)
+                FP_CH4.Set_ProdData_Bias(fpfile_id, file_ch4idx, 1)
+            else:
+                FP_CH4.Set_ProdData(fpfile_id, file_ch4idx, 1)
             #陸域のみ指定の場合は海域分のデータを削除
             if sysin.MAPRNG_FPCH4 == 2:
                 FP_CH4.Set_byLandFraction_Land(threshold)
@@ -92,7 +97,12 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
             logger.info('SWFP_CO取得完了')
         
             # 品質、濃度からデータを設定
-            FP_CO.Set_ProdData(fpfile_id, file_coidx, 2)
+            # バイアス補正フラグONの場合
+            if sysin.BIAS_FLG:
+                FP_CO.SetBiasSysin(sysin.CO_X, sysin.CO_X_NUM, sysin.CO_X_CAL, sysin.CO_A)
+                FP_CO.Set_ProdData_Bias(fpfile_id, file_coidx, 2)
+            else:
+                FP_CO.Set_ProdData(fpfile_id, file_coidx, 2)
             #陸域のみ指定の場合は海域分のデータを削除
             if sysin.MAPRNG_FPCO == 2:
                 FP_CO.Set_byLandFraction_Land(threshold)
