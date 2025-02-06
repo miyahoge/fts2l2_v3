@@ -8,7 +8,7 @@ import numpy as np
 ##@brief 補正係数とバイアス補正パラメータからバイアス補正計算を実施
 ##@param [in] Z バイアス補正前気体濃度
 ##@param [in] A 補正係数30個
-##@param [in] X バイアス補正パラメータ2次元配列（29×気体濃度サイズ）
+##@param [in] X 最大29個のバイアス補正パラメータ配列
 ##@return バイアス補正後気体濃度
 def Bias_Correct(Z, A, X):
 
