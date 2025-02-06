@@ -232,13 +232,16 @@ class XYZQ:
             #SWFPのみ
             self.whoami = rh5.read_h5_air_fp(file, id, ppm, qflg)
             self.Q = np.append(self.Q, np.array(qflg))
-            self.Z = np.append(self.Z, np.array(ppm))
+            # 一時変数に濃度データを格納
+            Z_tmp = np.array(ppm)
             # バイアス補正パラメータ計算元データセット取得
             BiasParam_DatSet = rh5bias.Read_Bias_Param(self.X_PATH, self.X_NUM, file)
             # バイアス補正パラメータ計算
             BiasParam = biasprm.Calc_Correct_Pram(self.X_NUM, self.X_CAL, BiasParam_DatSet)
             # バイアス補正実施
-            bias.Bias_Correct(self.A, BiasParam, self.Z)
+            Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
+            # 補正後の濃度をZに格納
+            self.Z = np.append(self.Z, Corrected_Z)
 
         self.start = end    #最後のインデックスを指定
         #品質フラグが0以外は不使用
