@@ -300,7 +300,12 @@ class XYZQ:
             return -1
         else:
             return 0
-        
+    
+    ##@brief バイアス補正関連パラメータの設定
+    ##@param [in] x_path バイアス補正パラメータデータセットパス
+    ##@param [in] x_num バイアス補正パラメータの数
+    ##@param [in] x_cal バイアス補正パラメータ計算式
+    ##@param [in] A バイアス補正係数
     def SetBiasSysin(self, x_path, x_num, x_cal, A):
         self.X_PATH = x_path
         self.X_NUM = x_num
