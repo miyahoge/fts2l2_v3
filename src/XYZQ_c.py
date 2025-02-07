@@ -45,12 +45,14 @@ class XYZQ:
         self.whoami = ''
         ##ファイルがない月数保存用
         self.month_noexist = 0
-        ##
+        ##バイアス補正パラメータデータセットパス
         self.X_PATH = []
-        ##
+        ##バイアス補正パラメータデータ数
         self.X_NUM = 0
-        ##
+        ##バイアス補正パラメータ計算式
         self.X_CAL = []
+        ##バイアス補正係数
+        self.A = np.array([])
 
     ##@brief フォルダ内の全ファイル名を取得
     ##@param [in] fileID プロダクト識別 SWFP or SWPR
@@ -228,11 +230,10 @@ class XYZQ:
         for file in self.file_name[self.start:end]:   #計算対象全ファイル分のデータを1次元配列として入手
             ppm  = []  #毎回初期化
             qflg = []
-            coef_arr_lst = []
             #SWFPのみ
             self.whoami = rh5.read_h5_air_fp(file, id, ppm, qflg)
             self.Q = np.append(self.Q, np.array(qflg))
-            # 一時変数に濃度データを格納
+            # 一時変数に濃度データをnumpy変換して格納
             Z_tmp = np.array(ppm)
             # バイアス補正パラメータ計算元データセット取得
             BiasParam_DatSet = rh5bias.Read_Bias_Param(self.X_PATH, self.X_NUM, file)
@@ -240,7 +241,7 @@ class XYZQ:
             BiasParam = biasprm.Calc_Correct_Pram(self.X_NUM, self.X_CAL, BiasParam_DatSet)
             # バイアス補正実施
             Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
-            # 補正後の濃度をZに格納
+            # 補正後の濃度をZに格納 Corrected_Zはnumpyに自動変換
             self.Z = np.append(self.Z, Corrected_Z)
 
         self.start = end    #最後のインデックスを指定
@@ -310,4 +311,4 @@ class XYZQ:
         self.X_PATH = x_path
         self.X_NUM = x_num
         self.X_CAL = x_cal
-        self.A = A
+        self.A = np.array(A)  #numpy配列に変換して代入
