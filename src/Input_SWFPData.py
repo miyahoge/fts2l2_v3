@@ -6,6 +6,7 @@ logger = getLogger("Log").getChild("sub")
 
 
 ##@brief SWFPプロダクトからデータを取得し、有効データのみを抽出
+##@brief バイアス補正フラグONの場合はバイアス補正用制御データを設定し、気体濃度のバイアス補正計算実施
 ##@param [in] sysin  制御データクラス
 ##@param [in, out] FP_CH4　CH4用データセットクラス
 ##@param [in, out] FP_CO　CO用データセットクラス
@@ -16,7 +17,6 @@ logger = getLogger("Log").getChild("sub")
 def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
 
     import numpy as np
-    import importlib
     from datetime import datetime
 
     #SWFPプロダクトの共通項を入力
@@ -49,7 +49,12 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
             logger.info('SWFP_CO2取得完了')
         
             # 品質、濃度からデータを設定
-            FP_CO2.Set_ProdData(fpfile_id, file_co2idx, 0)
+            # バイアス補正フラグONの場合、バイアス補正用制御データを設定し、気体濃度のバイアス補正計算実施
+            if sysin.BIAS_FLG:
+                FP_CO2.SetBiasSysin(sysin.CO2_X, sysin.CO2_X_NUM, sysin.CO2_X_CAL, sysin.CO2_A)
+                FP_CO2.Set_ProdData_Bias(fpfile_id, file_co2idx, 0)
+            else: # バイアス補正フラグOFFの場合
+                FP_CO2.Set_ProdData(fpfile_id, file_co2idx, 0)
             #陸域のみ指定の場合は海域分のデータを削除
             if sysin.MAPRNG_FPCO2 == 2:
                 FP_CO2.Set_byLandFraction_Land(threshold)
@@ -68,7 +73,12 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
             logger.info('SWFP_CH4取得完了')
         
             # 品質、濃度からデータを設定
-            FP_CH4.Set_ProdData(fpfile_id, file_ch4idx, 1)
+            # バイアス補正フラグONの場合、バイアス補正用制御データを設定し、気体濃度のバイアス補正計算実施
+            if sysin.BIAS_FLG:
+                FP_CH4.SetBiasSysin(sysin.CH4_X, sysin.CH4_X_NUM, sysin.CH4_X_CAL, sysin.CH4_A)
+                FP_CH4.Set_ProdData_Bias(fpfile_id, file_ch4idx, 1)
+            else: # バイアス補正フラグOFFの場合
+                FP_CH4.Set_ProdData(fpfile_id, file_ch4idx, 1)
             #陸域のみ指定の場合は海域分のデータを削除
             if sysin.MAPRNG_FPCH4 == 2:
                 FP_CH4.Set_byLandFraction_Land(threshold)
@@ -87,7 +97,12 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
             logger.info('SWFP_CO取得完了')
         
             # 品質、濃度からデータを設定
-            FP_CO.Set_ProdData(fpfile_id, file_coidx, 2)
+            # バイアス補正フラグONの場合、バイアス補正用制御データを設定し、気体濃度のバイアス補正計算実施
+            if sysin.BIAS_FLG:
+                FP_CO.SetBiasSysin(sysin.CO_X, sysin.CO_X_NUM, sysin.CO_X_CAL, sysin.CO_A)
+                FP_CO.Set_ProdData_Bias(fpfile_id, file_coidx, 2)
+            else: # バイアス補正フラグOFFの場合
+                FP_CO.Set_ProdData(fpfile_id, file_coidx, 2)
             #陸域のみ指定の場合は海域分のデータを削除
             if sysin.MAPRNG_FPCO == 2:
                 FP_CO.Set_byLandFraction_Land(threshold)

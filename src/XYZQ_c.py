@@ -1,6 +1,6 @@
 """
 @file XYZQ_c.py
-@brief プロダクトから読み込んだデータを編集し、計算用に内部パラメータ設定するモジュール
+@brief プロダクトから読み込んだデータを編集・気体濃度バイアス補正し、計算用に内部パラメータ設定するモジュール
 """
 
 import numpy as np
@@ -11,6 +11,9 @@ from logging import getLogger
 logger = getLogger("Log").getChild("sub")
 
 import Read_h5 as rh5
+import Read_h5_Bias as rh5bias
+import Calc_Correct_Param as biasprm
+import Bias_Correct as bias
 
 #@class XYZQ
 ##@brief プロダクトデータ設定クラス
@@ -42,6 +45,14 @@ class XYZQ:
         self.whoami = ''
         ##ファイルがない月数保存用
         self.month_noexist = 0
+        ##バイアス補正パラメータデータセットパス
+        self.X_PATH = []
+        ##バイアス補正パラメータデータ数
+        self.X_NUM = 0
+        ##バイアス補正パラメータ計算式
+        self.X_CAL = []
+        ##バイアス補正係数
+        self.A = np.array([])
 
     ##@brief フォルダ内の全ファイル名を取得
     ##@param [in] fileID プロダクト識別 SWFP or SWPR
@@ -90,7 +101,6 @@ class XYZQ:
     ##@return calcend_t 計算終了日付
     def Input_common(self, sysin, fileID, file_folder, begin_t, end_t):
 
-        import datetime
         from datetime import date
         from datetime import datetime as dtm
         from Get_Reexe_Num import monthdelta
@@ -195,6 +205,7 @@ class XYZQ:
         for file in self.file_name[self.start:end]:   #計算対象全ファイル分のデータを1次元配列として入手
             ppm  = []  #毎回初期化
             qflg = []
+
             if prod == 'SWPR':
                 self.whoami = rh5.read_h5_air_pr(file, id, ppm, qflg)
             elif prod == 'SWFP':
@@ -210,6 +221,37 @@ class XYZQ:
         self.Y = np.delete(self.Y, np.where(self.Q != 0)[0])
         self.LandFrac = np.delete(self.LandFrac, np.where(self.Q != 0)[0])
 
+    ##@brief 全域分のデータ設定(バイアス補正あり)
+    ##@param [in] prod プロダクト識別 SWFP or SWPR
+    ##@param [in] file_idx ファイル番号
+    ##@param [in] id 気体識別ID
+    def Set_ProdData_Bias(self, file_idx, id):
+        end = file_idx
+        for file in self.file_name[self.start:end]:   #計算対象全ファイル分のデータを1次元配列として入手
+            ppm  = []  #毎回初期化
+            qflg = []
+            #SWFPのみ
+            self.whoami = rh5.read_h5_air_fp(file, id, ppm, qflg)
+            self.Q = np.append(self.Q, np.array(qflg))
+            # 一時変数に濃度データをnumpy変換して格納
+            Z_tmp = np.array(ppm)
+            # バイアス補正パラメータ計算元データセット取得
+            BiasParam_DatSet = rh5bias.Read_Bias_Param(self.X_PATH, self.X_NUM, file)
+            # バイアス補正パラメータ計算
+            BiasParam = biasprm.Calc_Correct_Pram(self.X_NUM, self.X_CAL, BiasParam_DatSet)
+            # バイアス補正実施
+            Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
+            # 補正後の濃度をZに格納 Corrected_Zはnumpyに自動変換
+            self.Z = np.append(self.Z, Corrected_Z)
+
+        self.start = end    #最後のインデックスを指定
+        #品質フラグが0以外は不使用
+        self.Z = np.delete(self.Z, np.where(self.Q != 0)[0])
+        self.X = np.delete(self.X, np.where(self.Q != 0)[0])
+        self.Y = np.delete(self.Y, np.where(self.Q != 0)[0])
+        self.LandFrac = np.delete(self.LandFrac, np.where(self.Q != 0)[0])
+                
+    
     ##@brief 陸域のみの描画時の設定
     ##@param [in] threshold しきい値　10.0%
     ##@return しきい値未満の個数
@@ -259,3 +301,14 @@ class XYZQ:
             return -1
         else:
             return 0
+    
+    ##@brief バイアス補正関連パラメータの設定
+    ##@param [in] x_path バイアス補正パラメータデータセットパス
+    ##@param [in] x_num バイアス補正パラメータの数
+    ##@param [in] x_cal バイアス補正パラメータ計算式
+    ##@param [in] A バイアス補正係数
+    def SetBiasSysin(self, x_path, x_num, x_cal, A):
+        self.X_PATH = x_path
+        self.X_NUM = x_num
+        self.X_CAL = x_cal
+        self.A = np.array(A)  #numpy配列に変換して代入
