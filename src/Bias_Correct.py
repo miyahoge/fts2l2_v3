@@ -13,7 +13,7 @@ import numpy as np
 def Bias_Correct(Z, A, X):
 
     Z_AddA0 = Z + A[0] # 気体濃度＋補正係数[0]
-    SigmaAX = np.zeros(len(Z)) # 0で初期化(気体濃度と同じサイズ)
+    SigmaAX = np.zeros(Z.shape[1]) # 0で初期化(気体濃度と同じサイズの列行列)
     for ii in range(len(X)): # 補正係数×補正パラメータ
         SigmaAX += A[ii+1] * X[ii]
 

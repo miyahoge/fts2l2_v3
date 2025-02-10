@@ -53,6 +53,7 @@ class XYZQ:
         self.X_CAL = []
         ##バイアス補正係数
         self.A = np.array([])
+        self.A2 = np.array([])
 
     ##@brief フォルダ内の全ファイル名を取得
     ##@param [in] fileID プロダクト識別 SWFP or SWPR
@@ -222,11 +223,15 @@ class XYZQ:
         self.LandFrac = np.delete(self.LandFrac, np.where(self.Q != 0)[0])
 
     ##@brief 全域分のデータ設定(バイアス補正あり)
-    ##@param [in] prod プロダクト識別 SWFP or SWPR
     ##@param [in] file_idx ファイル番号
     ##@param [in] id 気体識別ID
-    def Set_ProdData_Bias(self, file_idx, id):
+    ##@param [in] change_coef_date 補正係数変更日付
+    def Set_ProdData_Bias(self, file_idx, id, change_coef_date):
+        
+        from datetime import datetime as dtm
+        
         end = file_idx
+        date_t = dtm.strptime(change_coef_date, '%Y%m%d') # 補正係数変更日付
         for file in self.file_name[self.start:end]:   #計算対象全ファイル分のデータを1次元配列として入手
             ppm  = []  #毎回初期化
             qflg = []
@@ -236,11 +241,17 @@ class XYZQ:
             # 一時変数に濃度データをnumpy変換して格納
             Z_tmp = np.array(ppm)
             # バイアス補正パラメータ計算元データセット取得
-            BiasParam_DatSet = rh5bias.Read_Bias_Param(self.X_PATH, self.X_NUM, file)
+            BiasParam_DatSet, h5date = rh5bias.Read_Bias_Param(self.X_PATH, self.X_NUM, file)
             # バイアス補正パラメータ計算
             BiasParam = biasprm.Calc_Correct_Pram(self.X_NUM, self.X_CAL, BiasParam_DatSet)
-            # バイアス補正実施
-            Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
+            # 補正係数変更日付の比較
+            h5dt = dtm.strptime(h5date[0][:10].decode(), '%Y-%m-%d')
+            if h5dt < date_t: # ファイル日付が変更日付より前なら
+                # バイアス補正実施
+                Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
+            else:
+                # バイアス補正(A2)実施
+                Corrected_Z = bias.Bias_Correct(Z_tmp, self.A2, BiasParam)
             # 補正後の濃度をZに格納 Corrected_Zはnumpyに自動変換
             self.Z = np.append(self.Z, Corrected_Z)
 
@@ -307,8 +318,9 @@ class XYZQ:
     ##@param [in] x_num バイアス補正パラメータの数
     ##@param [in] x_cal バイアス補正パラメータ計算式
     ##@param [in] A バイアス補正係数
-    def SetBiasSysin(self, x_path, x_num, x_cal, A):
+    def SetBiasSysin(self, x_path, x_num, x_cal, A, A2):
         self.X_PATH = x_path
         self.X_NUM = x_num
         self.X_CAL = x_cal
         self.A = np.array(A)  #numpy配列に変換して代入
+        self.A2= np.array(A2)  #numpy配列に変換して代入
