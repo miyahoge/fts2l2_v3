@@ -246,10 +246,10 @@ class XYZQ:
             # 補正係数日付変更フラグ
             if(change_coef_flag):
                 # 補正係数変更日付の比較
-                date_t = dtm.strptime(change_coef_date, '%Y%m%d') # 補正係数変更日付
-                h5dt = dtm.strptime(h5date[0][:10].decode(), '%Y-%m-%d')
+                change_coef_t = dtm.strptime(change_coef_date, '%Y%m%d') # 補正係数変更日付
+                h5dt_t = dtm.strptime(h5date[0][:10].decode(), '%Y-%m-%d')
 
-                if h5dt < date_t: # ファイル日付が変更日付より前なら
+                if h5dt_t < change_coef_t: # ファイル日付が変更日付より前なら
                     # バイアス補正実施
                     Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
                 else:
