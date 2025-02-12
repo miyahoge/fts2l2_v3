@@ -529,41 +529,42 @@ class configInit:
 
         #バイアス用データ設定チェック
         #それぞれのバイアス補正パラメータ設定数と、計算式の個数が整合しているかなどを確認すること
-        if self.CO2_X_NUM < 1 or self.CO2_X_NUM > 29:
-            logger.error('**制御データ範囲エラー** [CO2_X_NUM:{}]'.format(self.CO2_X_NUM))
-            ret = False
-        
-        if self.CH4_X_NUM < 1 or self.CH4_X_NUM > 29:
-            logger.error('**制御データ範囲エラー** [CH4_X_NUM:{}]'.format(self.CH4_X_NUM))
-            ret = False
+        if(self.BIAS_FLAG):
+            if self.CO2_X_NUM < 1 or self.CO2_X_NUM > 29:
+                logger.error('**制御データ範囲エラー** [CO2_X_NUM:{}]'.format(self.CO2_X_NUM))
+                ret = False
+            
+            if self.CH4_X_NUM < 1 or self.CH4_X_NUM > 29:
+                logger.error('**制御データ範囲エラー** [CH4_X_NUM:{}]'.format(self.CH4_X_NUM))
+                ret = False
 
-        if self.CO_X_NUM < 1 or self.CO_X_NUM > 29:
-            logger.error('**制御データ範囲エラー** [CO_X_NUM:{}]'.format(self.CO_X_NUM))
-            ret = False
+            if self.CO_X_NUM < 1 or self.CO_X_NUM > 29:
+                logger.error('**制御データ範囲エラー** [CO_X_NUM:{}]'.format(self.CO_X_NUM))
+                ret = False
+            
+            if len(self.CO2_X) != self.CO2_X_NUM:
+                logger.error('**制御データ範囲エラー** [CO2_X設定数:{}]'.format(len(self.CO2_X)))
+                ret = False
+            
+            if len(self.CH4_X) != self.CH4_X_NUM:
+                logger.error('**制御データ範囲エラー** [CH4_X設定数:{}]'.format(len(self.CH4_X)))
+                ret = False
         
-        if len(self.CO2_X) != self.CO2_X_NUM:
-            logger.error('**制御データ範囲エラー** [CO2_X設定数:{}]'.format(len(self.CO2_X)))
-            ret = False
-        
-        if len(self.CH4_X) != self.CH4_X_NUM:
-            logger.error('**制御データ範囲エラー** [CH4_X設定数:{}]'.format(len(self.CH4_X)))
-            ret = False
-    
-        if len(self.CO_X) != self.CO_X_NUM:
-            logger.error('**制御データ範囲エラー** [CO_X設定数:{}]'.format(len(self.CO_X)))
-            ret = False
+            if len(self.CO_X) != self.CO_X_NUM:
+                logger.error('**制御データ範囲エラー** [CO_X設定数:{}]'.format(len(self.CO_X)))
+                ret = False
 
-        if len(self.CO2_X_CAL) != self.CO2_X_NUM:
-            logger.error('**制御データ範囲エラー** [CO2_X_CAL設定数:{}]'.format(len(self.CO2_X_CAL)))
-            ret = False
+            if len(self.CO2_X_CAL) != self.CO2_X_NUM:
+                logger.error('**制御データ範囲エラー** [CO2_X_CAL設定数:{}]'.format(len(self.CO2_X_CAL)))
+                ret = False
+            
+            if len(self.CH4_X_CAL) != self.CH4_X_NUM:
+                logger.error('**制御データ範囲エラー** [CH4_X_CAL設定数:{}]'.format(len(self.CH4_X_CAL)))
+                ret = False
         
-        if len(self.CH4_X_CAL) != self.CH4_X_NUM:
-            logger.error('**制御データ範囲エラー** [CH4_X_CAL設定数:{}]'.format(len(self.CH4_X_CAL)))
-            ret = False
-    
-        if len(self.CO_X_CAL) != self.CO_X_NUM:
-            logger.error('**制御データ範囲エラー** [CO_X_CAL設定数:{}]'.format(len(self.CO_X_CAL)))
-            ret = False
+            if len(self.CO_X_CAL) != self.CO_X_NUM:
+                logger.error('**制御データ範囲エラー** [CO_X_CAL設定数:{}]'.format(len(self.CO_X_CAL)))
+                ret = False
 
         
 
