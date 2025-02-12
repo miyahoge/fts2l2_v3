@@ -20,6 +20,8 @@ def Read_Bias_Param(X, Num, h5path):
 
     with h5py.File(h5path,'r') as f:
 
+        date = f['Metadata']['startDate'][()]
+
         Bias_Param_Dataset = []
         for ii in range(Num):
             X_str = X[ii] # データセットのパス NUM の個数だけ（上限29）ある
@@ -33,5 +35,5 @@ def Read_Bias_Param(X, Num, h5path):
                     except KeyError:
                         logger.error('バイアス補正パラメータのデータセットパスに誤りがあります。{}'.format(data_path))
                         sys.exit(1)
-        return Bias_Param_Dataset
+        return Bias_Param_Dataset, date
 

@@ -7,6 +7,7 @@
 import math
 import re
 import sys
+import numpy as np
 # ログのライブラリ
 from logging import getLogger
 ## main.pyで宣言したloggerの子loggerオブジェクトの宣言
@@ -77,7 +78,12 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
    
         # 文字の置き換え
         expression = X_CAL[i].replace("$","x")
-        expression = expression.replace("sigma", "sum")
+
+        # sigma を np.sum にして各行の和とする
+        pattern = r"sigma\((x\d+)\)"
+        replacement = r"np.sum(\1, axis=1)"
+        # 置換を実行
+        expression = re.sub(pattern, replacement, expression)
    
         # 三角関数の場合はデータセットの内容をラジアン変換
         # cos 使用 x をすべて抽出

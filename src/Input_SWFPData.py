@@ -50,9 +50,9 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
         
             # 品質、濃度からデータを設定
             # バイアス補正フラグONの場合、バイアス補正用制御データを設定し、気体濃度のバイアス補正計算実施
-            if sysin.BIAS_FLG:
-                FP_CO2.SetBiasSysin(sysin.CO2_X, sysin.CO2_X_NUM, sysin.CO2_X_CAL, sysin.CO2_A)
-                FP_CO2.Set_ProdData_Bias(fpfile_id, file_co2idx, 0)
+            if sysin.BIAS_FLAG:
+                FP_CO2.SetBiasSysin(sysin.CO2_X, sysin.CO2_X_NUM, sysin.CO2_X_CAL, sysin.CO2_A, sysin.CO2_A2)
+                FP_CO2.Set_ProdData_Bias(file_co2idx, 0, sysin.CHANGE_COEF_FLAG, sysin.CHANGE_COEF_DATE)
             else: # バイアス補正フラグOFFの場合
                 FP_CO2.Set_ProdData(fpfile_id, file_co2idx, 0)
             #陸域のみ指定の場合は海域分のデータを削除
@@ -74,9 +74,9 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
         
             # 品質、濃度からデータを設定
             # バイアス補正フラグONの場合、バイアス補正用制御データを設定し、気体濃度のバイアス補正計算実施
-            if sysin.BIAS_FLG:
-                FP_CH4.SetBiasSysin(sysin.CH4_X, sysin.CH4_X_NUM, sysin.CH4_X_CAL, sysin.CH4_A)
-                FP_CH4.Set_ProdData_Bias(fpfile_id, file_ch4idx, 1)
+            if sysin.BIAS_FLAG:
+                FP_CH4.SetBiasSysin(sysin.CH4_X, sysin.CH4_X_NUM, sysin.CH4_X_CAL, sysin.CH4_A, sysin.CH4_A2)
+                FP_CH4.Set_ProdData_Bias(file_ch4idx, 1, sysin.CHANGE_COEF_FLAG, sysin.CHANGE_COEF_DATE)
             else: # バイアス補正フラグOFFの場合
                 FP_CH4.Set_ProdData(fpfile_id, file_ch4idx, 1)
             #陸域のみ指定の場合は海域分のデータを削除
@@ -98,9 +98,9 @@ def Input_SWFPData(sysin, FP_CH4, FP_CO, FP_CO2):
         
             # 品質、濃度からデータを設定
             # バイアス補正フラグONの場合、バイアス補正用制御データを設定し、気体濃度のバイアス補正計算実施
-            if sysin.BIAS_FLG:
-                FP_CO.SetBiasSysin(sysin.CO_X, sysin.CO_X_NUM, sysin.CO_X_CAL, sysin.CO_A)
-                FP_CO.Set_ProdData_Bias(fpfile_id, file_coidx, 2)
+            if sysin.BIAS_FLAG:
+                FP_CO.SetBiasSysin(sysin.CO_X, sysin.CO_X_NUM, sysin.CO_X_CAL, sysin.CO_A, sysin.CO_A2)
+                FP_CO.Set_ProdData_Bias(file_coidx, 2, sysin.CHANGE_COEF_FLAG, sysin.CHANGE_COEF_DATE)
             else: # バイアス補正フラグOFFの場合
                 FP_CO.Set_ProdData(fpfile_id, file_coidx, 2)
             #陸域のみ指定の場合は海域分のデータを削除
