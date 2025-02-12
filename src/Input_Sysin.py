@@ -156,6 +156,7 @@ class configInit:
         # 係数の数
         self.BIAS_COEF_NUM        = 30
         self.BIAS_FLAG = 0
+        self.CHANGE_COEF_FLAG = 0
         self.CO2_VER = ''
         self.CH4_VER = ''
         self.CO_VER  = ''
@@ -319,6 +320,8 @@ class configInit:
             logger.info('BIAS_FLAG = {0}'.format(self.BIAS_FLAG))
             if(self.BIAS_FLAG):
                 logger.info('**BIAS補正あり**')
+                self.CHANGE_COEF_FLAG = int(config_ini['BIAS']['CHANGE_COEF_FLAG'])
+                logger.info('CHANGE_COEF_FLAG = {0}'.format(self.CHANGE_COEF_FLAG))
                 # 補正係数
                 CO2_A_str = config_ini['BIAS']['CO2_A']
                 self.CO2_A = [float(num) for num in CO2_A_str.split(",")]
@@ -365,19 +368,20 @@ class configInit:
                 self.CO_X_CAL  = [xcal for xcal in CO_X_CAL_str.split(",")]
                 logger.info('CO_X_CAL  = {0}'.format(CO_X_CAL_str))
 
-                # 補正係数の変更日付
-                self.CHANGE_COEF_DATE = config_ini['BIAS']['CHANGE_COEF_DATE']
-                logger.info('CHANGE_COEF_DATE = {0}'.format(self.CHANGE_COEF_DATE))
-                # 変更後補正係数
-                CO2_A2_str = config_ini['BIAS']['CO2_A2']
-                self.CO2_A2 = [float(num) for num in CO2_A2_str.split(",")]
-                logger.info('CO2_A2  = {0}'.format(self.CO2_A2))
-                CH4_A2_str = config_ini['BIAS']['CH4_A2']
-                self.CH4_A2 = [float(num) for num in CH4_A2_str.split(",")]
-                logger.info('CH4_A2  = {0}'.format(self.CH4_A2))
-                CO_A2_str  = config_ini['BIAS']['CO_A2']
-                self.CO_A2  = [float(num) for num in CO_A2_str.split(",")]
-                logger.info('CO_A2  = {0}'.format(self.CO_A2))
+                if(self.CHANGE_COEF_FLAG):
+                    # 補正係数の変更日付
+                    self.CHANGE_COEF_DATE = config_ini['BIAS']['CHANGE_COEF_DATE']
+                    logger.info('CHANGE_COEF_DATE = {0}'.format(self.CHANGE_COEF_DATE))
+                    # 変更後補正係数
+                    CO2_A2_str = config_ini['BIAS']['CO2_A2']
+                    self.CO2_A2 = [float(num) for num in CO2_A2_str.split(",")]
+                    logger.info('CO2_A2  = {0}'.format(self.CO2_A2))
+                    CH4_A2_str = config_ini['BIAS']['CH4_A2']
+                    self.CH4_A2 = [float(num) for num in CH4_A2_str.split(",")]
+                    logger.info('CH4_A2  = {0}'.format(self.CH4_A2))
+                    CO_A2_str  = config_ini['BIAS']['CO_A2']
+                    self.CO_A2  = [float(num) for num in CO_A2_str.split(",")]
+                    logger.info('CO_A2  = {0}'.format(self.CO_A2))
 
 
             else:

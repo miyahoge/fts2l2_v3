@@ -226,12 +226,11 @@ class XYZQ:
     ##@param [in] file_idx ファイル番号
     ##@param [in] id 気体識別ID
     ##@param [in] change_coef_date 補正係数変更日付
-    def Set_ProdData_Bias(self, file_idx, id, change_coef_date):
+    def Set_ProdData_Bias(self, file_idx, id, change_coef_flag, change_coef_date):
         
         from datetime import datetime as dtm
         
         end = file_idx
-        date_t = dtm.strptime(change_coef_date, '%Y%m%d') # 補正係数変更日付
         for file in self.file_name[self.start:end]:   #計算対象全ファイル分のデータを1次元配列として入手
             ppm  = []  #毎回初期化
             qflg = []
@@ -244,14 +243,22 @@ class XYZQ:
             BiasParam_DatSet, h5date = rh5bias.Read_Bias_Param(self.X_PATH, self.X_NUM, file)
             # バイアス補正パラメータ計算
             BiasParam = biasprm.Calc_Correct_Pram(self.X_NUM, self.X_CAL, BiasParam_DatSet)
-            # 補正係数変更日付の比較
-            h5dt = dtm.strptime(h5date[0][:10].decode(), '%Y-%m-%d')
-            if h5dt < date_t: # ファイル日付が変更日付より前なら
+            # 補正係数日付変更フラグ
+            if(change_coef_flag):
+                # 補正係数変更日付の比較
+                date_t = dtm.strptime(change_coef_date, '%Y%m%d') # 補正係数変更日付
+                h5dt = dtm.strptime(h5date[0][:10].decode(), '%Y-%m-%d')
+
+                if h5dt < date_t: # ファイル日付が変更日付より前なら
+                    # バイアス補正実施
+                    Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
+                else:
+                    # バイアス補正(A2)実施
+                    Corrected_Z = bias.Bias_Correct(Z_tmp, self.A2, BiasParam)
+            else:
                 # バイアス補正実施
                 Corrected_Z = bias.Bias_Correct(Z_tmp, self.A, BiasParam)
-            else:
-                # バイアス補正(A2)実施
-                Corrected_Z = bias.Bias_Correct(Z_tmp, self.A2, BiasParam)
+
             # 補正後の濃度をZに格納 Corrected_Zはnumpyに自動変換
             self.Z = np.append(self.Z, Corrected_Z)
 
