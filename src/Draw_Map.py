@@ -11,8 +11,8 @@
 ##@param [in] grid グリッドデータ
 ##@param [in] data_ver 日付、バージョン情報
 ##@param [in] myid 気体等名称
-##@param [in] fileID プロダクト識別 SWFP or SWPR
-def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid, fileID):
+##@param [in] is_swfp SWFPの時にTrueとしてBIAS_FLAGの判定をする
+def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid, is_swfp=False):
     
     import numpy as np
     import matplotlib.pyplot as plt
@@ -90,7 +90,7 @@ def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid, fileID):
     ax.text(130, -105, begin + '-' + end + ' (V' + data_ver + ')', \
             ha='center', va='bottom', fontsize=40)
     # グラフ左下部に＜Bais-corrected＞を表示する
-    if fileID == 'SWFP':
+    if (is_swfp):
         if (sysin.BIAS_FLAG):
             ax.text(-130, -105, '<Bias-corrected>', \
                     ha='center', va='bottom', fontsize=50)

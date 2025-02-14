@@ -72,7 +72,7 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             grid_CO2 = Create_GridData.griddata(X_CO2, Y_CO2, Z_CO2, step = sysin.SPACIALSTEP)
         
             #描画処理   
-            pltfpco2 = DM.Draw_Map(sysin, co2_sysin, begin, end, grid_CO2, ver, myid, 'SWFP')
+            pltfpco2 = DM.Draw_Map(sysin, co2_sysin, begin, end, grid_CO2, ver, myid, True)
             pltfpco2.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO2_' + date_period)
             pltfpco2.close()
         else:
@@ -85,7 +85,7 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             grid_CH4 = Create_GridData.griddata(X_CH4, Y_CH4, Z_CH4, step = sysin.SPACIALSTEP)
         
             #描画処理   
-            pltfpch4 = DM.Draw_Map(sysin, ch4_sysin, begin, end, grid_CH4, ver, myid, 'SWFP')
+            pltfpch4 = DM.Draw_Map(sysin, ch4_sysin, begin, end, grid_CH4, ver, myid, True)
             pltfpch4.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CH4_' + date_period)
             pltfpch4.close()
         else:
@@ -98,7 +98,7 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             grid_CO = Create_GridData.griddata(X_CO, Y_CO, Z_CO, step = sysin.SPACIALSTEP)
         
             #描画処理
-            pltfpco = DM.Draw_Map(sysin, co_sysin, begin, end, grid_CO, ver, myid, 'SWFP')
+            pltfpco = DM.Draw_Map(sysin, co_sysin, begin, end, grid_CO, ver, myid, True)
             pltfpco.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO_' + date_period)
             pltfpco.close()
         else:

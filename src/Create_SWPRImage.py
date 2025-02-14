@@ -73,7 +73,7 @@ def Create_SWPRImage(sysin, ch4_sysin, co_sysin, sif_sysin):
             grid_CH4 = Create_GridData.griddata(X_CH4, Y_CH4, Z_CH4, step = sysin.SPACIALSTEP)
 
             #描画処理
-            pltprch4 = DM.Draw_Map(sysin, ch4_sysin, begin, end, grid_CH4, ver, myid, 'SWPR')
+            pltprch4 = DM.Draw_Map(sysin, ch4_sysin, begin, end, grid_CH4, ver, myid)
             pltprch4.savefig(sysin.IMGPATH + '\SWPR' + ver + 'CH4_' + date_period)
             pltprch4.close()
         else:
@@ -86,7 +86,7 @@ def Create_SWPRImage(sysin, ch4_sysin, co_sysin, sif_sysin):
             grid_CO = Create_GridData.griddata(X_CO, Y_CO, Z_CO, step = sysin.SPACIALSTEP)
         
             #描画処理   
-            pltprco = DM.Draw_Map(sysin, co_sysin, begin, end, grid_CO, ver, myid, 'SWPR')
+            pltprco = DM.Draw_Map(sysin, co_sysin, begin, end, grid_CO, ver, myid)
             pltprco.savefig(sysin.IMGPATH + '\SWPR' + ver + 'CO_' + date_period)
             pltprco.close()
         else:
@@ -99,7 +99,7 @@ def Create_SWPRImage(sysin, ch4_sysin, co_sysin, sif_sysin):
             grid_SIF = Create_GridData.griddata(X_SIF, Y_SIF, Z_SIF, step = sysin.SPACIALSTEP)
         
             #描画処理
-            pltprsif = DM.Draw_Map(sysin, sif_sysin, begin, end, grid_SIF, ver, myid, 'SWPR')
+            pltprsif = DM.Draw_Map(sysin, sif_sysin, begin, end, grid_SIF, ver, myid)
             pltprsif.savefig(sysin.IMGPATH + '\SWPR' + ver + 'SIF_' + date_period)
             pltprsif.close()
         else:
