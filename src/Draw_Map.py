@@ -93,7 +93,7 @@ def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid, fileID):
     if fileID == 'SWFP':
         if (sysin.BIAS_FLAG):
             ax.text(-130, -105, '<Bias-corrected>', \
-                    ha='center', va='bottom', fontsize=40)
+                    ha='center', va='bottom', fontsize=50)
     
     if myid == 'SIF':
         # SIF場合はマップ上オーストラリアと南極の間にクレジットを表示する
