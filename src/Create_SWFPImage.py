@@ -73,7 +73,10 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
         
             #描画処理   
             pltfpco2 = DM.Draw_Map(sysin, co2_sysin, begin, end, grid_CO2, ver, myid, True)
-            pltfpco2.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO2_' + date_period)
+            if (sysin.BIAS_FLAG):
+                pltfpco2.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO2_' + sysin.CO2_VER + '_' + date_period)
+            else:
+                pltfpco2.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO2_' + date_period)
             pltfpco2.close()
         else:
             logger.info('SWFP_CO2データを取得していません。')
@@ -86,7 +89,10 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
         
             #描画処理   
             pltfpch4 = DM.Draw_Map(sysin, ch4_sysin, begin, end, grid_CH4, ver, myid, True)
-            pltfpch4.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CH4_' + date_period)
+            if (sysin.BIAS_FLAG):
+                pltfpch4.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CH4_' + sysin.CH4_VER + '_' + date_period)
+            else:
+                pltfpch4.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CH4_' + date_period)
             pltfpch4.close()
         else:
             logger.info('SWFP_CH4データを取得していません。')
@@ -99,7 +105,10 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
         
             #描画処理
             pltfpco = DM.Draw_Map(sysin, co_sysin, begin, end, grid_CO, ver, myid, True)
-            pltfpco.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO_' + date_period)
+            if (sysin.BIAS_FLAG):
+                pltfpco.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO_' + sysin.CO_VER + '_' + date_period)
+            else:
+                pltfpco.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO_' + date_period)
             pltfpco.close()
         else:
             logger.info('SWFP_COデータを取得していません。')
