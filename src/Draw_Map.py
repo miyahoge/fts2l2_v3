@@ -11,7 +11,8 @@
 ##@param [in] grid グリッドデータ
 ##@param [in] data_ver 日付、バージョン情報
 ##@param [in] myid 気体等名称
-def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid):
+##@param [in] is_swfp SWFPの時にTrueとしてBIAS_FLAGの判定をする. SWPRの場合は初期値でFalseが設定される.
+def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid, is_swfp=False):
     
     import numpy as np
     import matplotlib.pyplot as plt
@@ -85,9 +86,15 @@ def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid):
     #タイトルを設定
     plt.title(air_sysin.map_title, size=60, x=0.5, y=1.06)
 
-    # グラフ左下部にヴァージョンを表示する
+    # グラフ右下部にバージョンを表示する
     ax.text(130, -105, begin + '-' + end + ' (V' + data_ver + ')', \
             ha='center', va='bottom', fontsize=40)
+    # SWFPかつバイアスフラグONの場合のみグラフ左下部に＜Bais-corrected＞を表示する
+    if (is_swfp):
+        if (sysin.BIAS_FLAG):
+            ax.text(-130, -105, '<Bias-corrected>', \
+                    ha='center', va='bottom', fontsize=50)
+    
     if myid == 'SIF':
         # SIF場合はマップ上オーストラリアと南極の間にクレジットを表示する
         ax.text( 120, -60, '©JAXA/NIES/MOE', ha='center', va='bottom', fontsize=40)
