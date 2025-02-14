@@ -11,7 +11,7 @@
 ##@param [in] grid グリッドデータ
 ##@param [in] data_ver 日付、バージョン情報
 ##@param [in] myid 気体等名称
-##@param [in] is_swfp SWFPの時にTrueとしてBIAS_FLAGの判定をする
+##@param [in] is_swfp SWFPの時にTrueとしてBIAS_FLAGの判定をする. SWPRの場合は初期値でFalseが設定される.
 def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid, is_swfp=False):
     
     import numpy as np
@@ -89,7 +89,7 @@ def Draw_Map(sysin, air_sysin, begin, end, grid, data_ver, myid, is_swfp=False):
     # グラフ右下部にバージョンを表示する
     ax.text(130, -105, begin + '-' + end + ' (V' + data_ver + ')', \
             ha='center', va='bottom', fontsize=40)
-    # グラフ左下部に＜Bais-corrected＞を表示する
+    # SWFPかつバイアスフラグONの場合のみグラフ左下部に＜Bais-corrected＞を表示する
     if (is_swfp):
         if (sysin.BIAS_FLAG):
             ax.text(-130, -105, '<Bias-corrected>', \
