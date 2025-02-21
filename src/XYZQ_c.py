@@ -268,8 +268,32 @@ class XYZQ:
         self.X = np.delete(self.X, np.where(self.Q != 0)[0])
         self.Y = np.delete(self.Y, np.where(self.Q != 0)[0])
         self.LandFrac = np.delete(self.LandFrac, np.where(self.Q != 0)[0])
-                
-    
+
+        # 補正計算確認用ログ
+        import os
+        import csv
+        file_name = "log.csv"
+        if os.path.exists(file_name): # csvファイルがあれば開いてリスト化する
+            with open(file_name, mode='r', newline='') as file:
+                reader = csv.reader(file)
+                rows = list(reader)
+        else: # csvがなければリストを初期化設定
+            rows = []
+        # self.Zをそれぞれの列に追加
+        for i, value in enumerate(self.Z):
+            if i < len(rows): # 行数をインクリメントして
+                if len(rows[i]) < id+2: # 列数が満たないときにnoneで埋める
+                    rows[i].extend([None] * (id+2 - len(rows[i])))
+                rows[i][id] = value
+            else:
+                row = [None] * (id)
+                row.append(value)
+                rows.append(row)
+        # CSVに保存（上書き）
+        with open(file_name, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(rows)    
+
     ##@brief 陸域のみの描画時の設定
     ##@param [in] threshold しきい値　10.0%
     ##@return しきい値未満の個数
