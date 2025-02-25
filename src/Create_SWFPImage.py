@@ -71,6 +71,13 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             #格子データ作成
             grid_CO2 = Create_GridData.griddata(X_CO2, Y_CO2, Z_CO2, step = sysin.SPACIALSTEP)
         
+            # grid_CO2 をcsvに出力
+            import csv
+            file_name = "CO2_ave.csv"
+            with open(file_name,'w',newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(grid_CO2)
+
             #描画処理   
             pltfpco2 = DM.Draw_Map(sysin, co2_sysin, begin, end, grid_CO2, ver, myid, True)
             if (sysin.BIAS_FLAG): # 補正計算する場合はファイル名に識別を付与
@@ -86,7 +93,14 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             X_CH4, Y_CH4, Z_CH4, Q_CH4, LF_CH4 , myid= FP_CH4.GetData()
             #格子データ作成
             grid_CH4 = Create_GridData.griddata(X_CH4, Y_CH4, Z_CH4, step = sysin.SPACIALSTEP)
-        
+
+            # grid_CH4 をcsvに出力
+            import csv
+            file_name = "CH4_ave.csv"
+            with open(file_name,'w',newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(grid_CH4)
+
             #描画処理   
             pltfpch4 = DM.Draw_Map(sysin, ch4_sysin, begin, end, grid_CH4, ver, myid, True)
             if (sysin.BIAS_FLAG): # 補正計算する場合はファイル名に識別を付与
@@ -103,6 +117,13 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             #格子データ作成
             grid_CO = Create_GridData.griddata(X_CO, Y_CO, Z_CO, step = sysin.SPACIALSTEP)
         
+            # grid_CO をcsvに出力
+            import csv
+            file_name = "CO_ave.csv"
+            with open(file_name,'w',newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(grid_CO)
+
             #描画処理
             pltfpco = DM.Draw_Map(sysin, co_sysin, begin, end, grid_CO, ver, myid, True)
             if (sysin.BIAS_FLAG): # 補正計算する場合はファイル名に識別を付与
