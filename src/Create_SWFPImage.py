@@ -95,7 +95,6 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             grid_CH4 = Create_GridData.griddata(X_CH4, Y_CH4, Z_CH4, step = sysin.SPACIALSTEP)
 
             # grid_CH4 をcsvに出力
-            import csv
             file_name = "CH4_ave.csv"
             with open(file_name,'w',newline='') as file:
                 writer = csv.writer(file)
@@ -118,7 +117,6 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             grid_CO = Create_GridData.griddata(X_CO, Y_CO, Z_CO, step = sysin.SPACIALSTEP)
         
             # grid_CO をcsvに出力
-            import csv
             file_name = "CO_ave.csv"
             with open(file_name,'w',newline='') as file:
                 writer = csv.writer(file)
