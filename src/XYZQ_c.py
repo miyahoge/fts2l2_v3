@@ -279,15 +279,20 @@ class XYZQ:
                 rows = list(reader)
         else: # csvがなければリストを初期化設定
             rows = []
-        # self.Zをそれぞれの列に追加
-        for i, value in enumerate(self.Z):
+        # idに基づいて列のオフセットを計算
+        offset = id * 3
+
+        # self.Z, self.X, self.Yをそれぞれの列に追加
+        for i, (x_value, y_value, z_value) in enumerate(zip(self.X,self.Y,self.Z)):
             if i < len(rows): # 行数をインクリメントして
-                if len(rows[i]) < id+2: # 列数が満たないときにnoneで埋める
-                    rows[i].extend([None] * (id+2 - len(rows[i])))
-                rows[i][id] = value
+                if len(rows[i]) < offset+3: # 列数が満たないときにnoneで埋める
+                    rows[i].extend([None] * (offset+3 - len(rows[i])))
+                rows[i][offset] = y_value
+                rows[i][offset+1] = x_value
+                rows[i][offset+2] = z_value
             else:
-                row = [None] * (id)
-                row.append(value)
+                row = [None] * offset
+                row.extend([y_value, x_value, z_value])
                 rows.append(row)
         # CSVに保存（上書き）
         with open(file_name, mode='w', newline='') as file:
