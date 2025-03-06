@@ -34,6 +34,7 @@ def Read_Bias_Param(X, Num, h5path):
                         Bias_Param_Dataset.append(f[data_path][()])
                     except KeyError:
                         logger.error('バイアス補正パラメータのデータセットパスに誤りがあります。{}'.format(data_path))
+                        print('バイアス補正パラメータのデータセットパスに誤りがあります。{}'.format(data_path))
                         sys.exit(1)
         return Bias_Param_Dataset, date
 

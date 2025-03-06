@@ -123,16 +123,18 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
             Bias_Param.append(eval(expression))
         except SyntaxError:
             logger.error('バイアス補正パラメータの計算式構文エラー: {}'.format(expression))
+            print("バイアス補正パラメータの計算式構文エラー 計算式を修正してください。{}".format(expression))
             sys.exit(1)
         except NameError:
             logger.error('バイアス補正パラメータの計算式変数エラー: {}'.format(expression))
+            print("バイアス補正パラメータの計算式変数エラー 変数名を修正してください。: {}".format(expression))
             sys.exit(1)
         except Exception as e:
             logger.error('バイアス補正パラメータの計算で予期せぬエラー: {}'.format(e))
+            print("バイアス補正パラメータの計算で予期せぬエラー 制御データファイルを確認してください。: {}".format(e))
             sys.exit(1)
 
             
-    
     return Bias_Param
 
     
