@@ -74,7 +74,7 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             #描画処理   
             pltfpco2 = DM.Draw_Map(sysin, co2_sysin, begin, end, grid_CO2, ver, myid, True)
             if (sysin.BIAS_FLAG): # 補正計算する場合はファイル名に識別を付与
-                pltfpco2.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO2_' + begin + '_' + end + '_Bias-Corrected_' + sysin.CO2_VER + '_tmp.png')
+                pltfpco2.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO2_' + begin + '_' + end + '_BC_' + sysin.CO2_VER + '_tmp.png')
             else: # 補正計算しない場合
                 pltfpco2.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO2_' + date_period)
             pltfpco2.close()
@@ -90,7 +90,7 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             #描画処理   
             pltfpch4 = DM.Draw_Map(sysin, ch4_sysin, begin, end, grid_CH4, ver, myid, True)
             if (sysin.BIAS_FLAG): # 補正計算する場合はファイル名に識別を付与
-                pltfpch4.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CH4_' + begin + '_' + end + '_Bias-Corrected_' + sysin.CH4_VER + '_tmp.png')
+                pltfpch4.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CH4_' + begin + '_' + end + '_BC_' + sysin.CH4_VER + '_tmp.png')
             else: # 補正計算しない場合
                 pltfpch4.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CH4_' + date_period)
             pltfpch4.close()
@@ -106,7 +106,7 @@ def Create_SWFPImage(sysin, co2_sysin, ch4_sysin, co_sysin):
             #描画処理
             pltfpco = DM.Draw_Map(sysin, co_sysin, begin, end, grid_CO, ver, myid, True)
             if (sysin.BIAS_FLAG): # 補正計算する場合はファイル名に識別を付与
-                pltfpco.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO_' + begin + '_' + end + '_Bias-Corrected_' + sysin.CO_VER + '_tmp.png')
+                pltfpco.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO_' + begin + '_' + end + '_BC_' + sysin.CO_VER + '_tmp.png')
             else: # 補正計算しない場合
                 pltfpco.savefig(sysin.IMGPATH + '\SWFP' + ver + 'CO_' + date_period)
             pltfpco.close()
