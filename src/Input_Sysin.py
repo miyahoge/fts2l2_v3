@@ -238,6 +238,8 @@ class configInit:
             logger.info('COLORSCALEMAX_FPCO   = {0}'.format(self.COLORSCALEMAX_FPCO))
             self.COLORSCALEMIN_FPCO   = float(config_ini['SWFP']['COLORSCALEMIN_FPCO'])
             logger.info('COLORSCALEMIN_FPCO   = {0}'.format(self.COLORSCALEMIN_FPCO))
+            self.SCALESTEP_FPCO       = float(config_ini['SWFP']['SCALESTEP_FPCO'])
+            logger.info('SCALESTEP_FPCO       = {0}'.format(self.SCALESTEP_FPCO))
             
             logger.info('**SWPR用データを読み込み**')
             self.SWPR_CH4             = int(config_ini['SWPR']['SWPR_CH4'])
