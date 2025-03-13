@@ -82,6 +82,7 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
         # sigma を np.sum にして各行の和とする（ただし、指定したパスが２次元配列以上でなければ値をそのまま返す）
         pattern = r"sigma\((x\d+)\)"
         replacement = r"np.sum(\1, axis=1) if \1.ndim > 1 else \1"
+        # sigmaを置換する際は文字列の中にif文を設けて、x1などの配列が2次元未満であれば値をそのまま返す
         # 置換を実行
         expression = re.sub(pattern, replacement, expression)
    
