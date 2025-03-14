@@ -46,25 +46,25 @@ def deg2rad(value):
 ##@return Bias_Param バイアス補正パラメータリスト
 def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
     def ln(x):
-        return math.log(x)
+        return np.log(x)
     def log10(x):
-        return math.log10(x)
+        return np.log10(x)
     def sin(x):
-        return math.sin(x)
+        return np.sin(x)
     def cos(x):
-        return math.cos(x)
+        return np.cos(x)
     def tan(x):
-        return math.tan(x)
+        return np.tan(x)
     def asin(x):
-        return math.asin(x)
+        return np.asin(x)
     def acos(x):
-        return math.acos(x)
+        return np.acos(x)
     def atan(x):
-        return math.atan(x)
+        return np.atan(x)
     def atan2(x):
-        return math.atan2(x)
+        return np.atan2(x)
     def sqrt(x):
-        return math.sqrt(x)
+        return np.sqrt(x)
    
     Bias_Param = []
     set_limit = 5
@@ -79,9 +79,10 @@ def Calc_Correct_Pram(X_NUM, X_CAL, dat_set):
         # 文字の置き換え
         expression = X_CAL[i].replace("$","x")
 
-        # sigma を np.sum にして各行の和とする
+        # sigma を np.sum にして各行の和とする（ただし、指定したパスが２次元配列以上でなければ値をそのまま返す）
         pattern = r"sigma\((x\d+)\)"
-        replacement = r"np.sum(\1, axis=1)"
+        replacement = r"np.sum(\1, axis=1) if \1.ndim > 1 else \1"
+        # sigmaを置換する際は文字列の中にif文を設けて、x1などの配列が2次元未満であれば値をそのまま返す
         # 置換を実行
         expression = re.sub(pattern, replacement, expression)
    
