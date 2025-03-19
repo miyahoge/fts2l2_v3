@@ -1,3 +1,8 @@
+"""
+@file Input_SWFPData.py
+@brief SWFPプロダクトデータを入力するモジュール
+"""
+
 # ログのライブラリ
 from logging import getLogger
 
