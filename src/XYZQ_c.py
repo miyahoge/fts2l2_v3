@@ -80,6 +80,7 @@ class XYZQ:
     
     ##@brief ファイルリストの日付と数のチェックと範囲外ファイルをリストから削除
     ##@param [in, out] file_list ファイルリスト
+    ##@param [in] file_id プロダクト識別 SWFP or SWPR 
     ##@param [in] begin_t 指定開始日付
     ##@param [in] end_t 指定終了日付
     def Remove_OutofDateFiles(self, file_list, file_id, begin_t, end_t):
@@ -225,6 +226,7 @@ class XYZQ:
     ##@brief 全域分のデータ設定(バイアス補正あり)
     ##@param [in] file_idx ファイル番号
     ##@param [in] id 気体識別ID
+    ##@param [in] change_coef_flag 日付変更フラグ
     ##@param [in] change_coef_date 補正係数変更日付
     def Set_ProdData_Bias(self, file_idx, id, change_coef_flag, change_coef_date):
         
@@ -325,6 +327,7 @@ class XYZQ:
     ##@param [in] x_num バイアス補正パラメータの数
     ##@param [in] x_cal バイアス補正パラメータ計算式
     ##@param [in] A バイアス補正係数
+    ##@param [in] A 変更後バイアス補正係数
     def SetBiasSysin(self, x_path, x_num, x_cal, A, A2):
         self.X_PATH = x_path
         self.X_NUM = x_num
